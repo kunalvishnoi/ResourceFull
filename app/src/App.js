@@ -1,15 +1,17 @@
 import React from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch, Router } from "react-router-dom";
 import Index from "./Pages/dashboard";
-
+import history from "./util/history.js";
 function App() {
   return (
     <BrowserRouter>
-      <React.Fragment>
-        <Switch>
-          <Route path="/" component={Index} exact />
-        </Switch>
-      </React.Fragment>
+      <>
+        <Router history={history}>
+          <Switch>
+            <Route path="/" component={Index} exact />
+          </Switch>
+        </Router>
+      </>
     </BrowserRouter>
   );
 }

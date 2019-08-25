@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import clsx from "clsx";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
@@ -17,6 +18,8 @@ import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
 import Button from "@material-ui/core/Button";
 import "../App.css";
+import GoogleLogin from "./google";
+import InfoConnect from "./infoconnect";
 
 const drawerWidth = 240;
 
@@ -89,10 +92,25 @@ const MiniDrawer = props => {
   const isOpen = !props.isMobile;
   const classes = useStyles();
   const [open, setOpen] = React.useState(isOpen);
-
+  const [user, changeUser] = React.useState(false);
   function handleDrawerOpen() {
     setOpen(prevState => !prevState);
   }
+
+  useEffect(() => {
+    if (
+      localStorage.getItem("token") &&
+      localStorage.getItem("token").length > 15
+    ) {
+      changeUser(true);
+    }
+  });
+
+  const logOut = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("name");
+    changeUser(false);
+  };
 
   return (
     <div className={classes.root}>
@@ -115,22 +133,32 @@ const MiniDrawer = props => {
               <MenuIcon />
             </IconButton>
           </div>
-          <Button
-            variant="contained"
-            color="secondary"
-            className={classes.button}
-            style={{ marginRight: "10px" }}
-          >
-            Create Post
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            style={{ marginRight: "10px" }}
-          >
-            Login
-          </Button>
+          {user ? (
+            <Button
+              variant="contained"
+              color="secondary"
+              className={classes.button}
+              style={{ marginRight: "10px" }}
+            >
+              Create Post
+            </Button>
+          ) : null}
+          {user ? (
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              style={{ marginRight: "10px" }}
+              onClick={logOut}
+            >
+              LogOut
+            </Button>
+          ) : (
+            <>
+              <GoogleLogin />
+              <InfoConnect />
+            </>
+          )}
         </Toolbar>
       </AppBar>
       <Drawer
